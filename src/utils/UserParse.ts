@@ -11,7 +11,7 @@ interface IUserData {
   pt: [
     {
       pt_name: string;
-      pt_code: string[];
+      pt_code: string;
     }
   ];
   prodi: [
