@@ -2,8 +2,9 @@ import { expect, test as setup } from "@playwright/test";
 import URLConfig from "@utils/URLConfig";
 import UserParse from "@utils/UserParse";
 import path = require("path");
+import * as fs from "fs";
 
-setup.describe.parallel("Auth Setup", () => {
+setup.describe.parallel("Global Setup", () => {
   setup("Clearing cache and enabling mock operator", async ({ page }) => {
     await page.goto(`${URLConfig.baseURL}/dev/cache`);
     await page.getByRole("button", { name: "Clear Expired Cache" }).click();
@@ -27,8 +28,12 @@ setup.describe.parallel("Auth Setup", () => {
   });
 
   const users = new UserParse();
+  users.parse();
+  const userDataPath = path.resolve(".data", "userData.json");
+  const userDataString = fs.readFileSync(userDataPath, "utf-8");
+  const userData = JSON.parse(userDataString);
 
-  for (const user of users.parse()) {
+  for (const user of userData) {
     setup(`Logging in ${user.username}`, async ({ page }) => {
       await page.goto(URLConfig.loginURL);
       await page.getByPlaceholder("Username").fill(user.username);

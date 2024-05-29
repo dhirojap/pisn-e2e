@@ -23,34 +23,66 @@ interface IUserData {
 }
 
 class UserParse {
+  private readonly csvDir: string;
+
+  constructor() {
+    this.csvDir = path.resolve(__dirname, "..", "..", "src", "assets");
+  }
+
   parse(): IUserData[] {
     const userData: IUserData[] = [];
+    const csvFiles = fs
+      .readdirSync(this.csvDir)
+      .filter((file) => file.endsWith(".csv"));
 
-    const filePath = path.resolve(
-      __dirname,
-      "..",
-      "..",
-      "src",
-      "assets",
-      "user.csv"
-    );
-    const stream = fs.readFileSync(filePath);
-    const users = parse(stream, {
-      columns: true,
-      skip_empty_lines: true,
-      bom: true,
-    });
+    for (const fileName of csvFiles) {
+      const filePath = path.join(this.csvDir, fileName);
 
-    for (const user of users) {
-      userData.push({
-        username: user.username,
-        password: user.password,
-        role: user.role,
-        pt: [{ pt_name: user.pt_name, pt_code: user.pt_code }],
-        prodi: [{ prodi_name: user.prodi_name, prodi_code: user.prodi_code }],
-      });
+      try {
+        const stream = fs.readFileSync(filePath);
+        const users = parse(stream, {
+          columns: true,
+          skip_empty_lines: true,
+          bom: true,
+        });
+
+        for (const user of users) {
+          const username = user.username;
+          const existingEntry = userData.find((u) => u.username === username);
+
+          if (existingEntry) {
+            existingEntry.pt.push({
+              pt_name: user.pt_name,
+              pt_code: user.pt_code,
+            });
+            existingEntry.prodi.push({
+              prodi_name: user.prodi_name,
+              prodi_code: user.prodi_code,
+            });
+          } else {
+            userData.push({
+              username: user.username,
+              password: user.password,
+              role: user.role,
+              pt: [
+                {
+                  pt_name: user.pt_name,
+                  pt_code: user.pt_code,
+                },
+              ],
+              prodi: [
+                {
+                  prodi_name: user.prodi_name,
+                  prodi_code: user.prodi_code,
+                },
+              ],
+            });
+          }
+        }
+      } catch (error) {
+        console.error(`Error parsing ${fileName}:`, error);
+      }
     }
-
     const jsonFilePath = path.resolve(
       __dirname,
       "..",
@@ -59,7 +91,6 @@ class UserParse {
       "userData.json"
     );
     fs.writeFileSync(jsonFilePath, JSON.stringify(userData, null, 2));
-
     return userData;
   }
 }
