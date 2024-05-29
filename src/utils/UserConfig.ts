@@ -11,13 +11,13 @@ export async function getUserData(data: string): Promise<string | undefined> {
       case "role":
         return user.role;
       case "pt_name":
-        return user.pt[0].pt_name;
+        user.pt.map((p) => {
+          return p.pt_name;
+        });
       case "pt_code":
         user.pt.map((p) => {
           return p.pt_code;
         });
-      // case "pt_list":
-      //   return user.pt;
       case "prodi_name":
         user.prodi.map((prod) => {
           return prod.prodi_name;
@@ -26,11 +26,10 @@ export async function getUserData(data: string): Promise<string | undefined> {
         user.prodi.map((prod) => {
           return prod.prodi_code;
         });
-      // case "prodi_list":
-      //   return user.prodi;
       default:
         return undefined;
     }
   }
+
   return users[data];
 }
