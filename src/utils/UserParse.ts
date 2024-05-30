@@ -4,7 +4,7 @@ import { parse } from "csv-parse/sync";
 
 type Role = "admin" | "operator";
 
-interface IUserData {
+export interface IUserData {
   username: string;
   password: string;
   role: Role;

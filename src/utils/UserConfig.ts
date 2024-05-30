@@ -1,35 +1,20 @@
-import UserParse from "./UserParse";
+import path = require("path");
+import UserParse, { IUserData } from "./UserParse";
+import * as fs from "fs";
 
-export async function getUserData(data: string): Promise<string | undefined> {
+let userData: IUserData[] = [];
+
+function getUserData(): IUserData[] {
   const users = new UserParse();
-  for (const user of users.parse()) {
-    switch (data.toLowerCase()) {
-      case "username":
-        return user.username;
-      case "password":
-        return user.password;
-      case "role":
-        return user.role;
-      case "pt_name":
-        user.pt.map((p) => {
-          return p.pt_name;
-        });
-      case "pt_code":
-        user.pt.map((p) => {
-          return p.pt_code;
-        });
-      case "prodi_name":
-        user.prodi.map((prod) => {
-          return prod.prodi_name;
-        });
-      case "prodi_code":
-        user.prodi.map((prod) => {
-          return prod.prodi_code;
-        });
-      default:
-        return undefined;
-    }
-  }
+  users.parse();
 
-  return users[data];
+  const userDataPath = path.resolve(".data", "userData.json");
+  const userDataString = fs.readFileSync(userDataPath, "utf-8");
+  const result = JSON.parse(userDataString) as IUserData[];
+
+  userData.push(...result);
+
+  return userData;
 }
+
+export default getUserData;
