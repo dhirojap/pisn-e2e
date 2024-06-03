@@ -2,7 +2,20 @@ import * as fs from "fs";
 import path = require("path");
 import { parse } from "csv-parse/sync";
 
-type Role = "admin" | "operator";
+export type Role = "admin" | "operator";
+
+export type Jenjang =
+  | "Diploma I"
+  | "Diploma II"
+  | "Diploma III"
+  | "Diploma IV"
+  | "Sarjana"
+  | "Profesi"
+  | "Spesialis"
+  | "Magister"
+  | "Magister Terapan"
+  | "Sub Spesialis"
+  | "Doktor";
 
 export interface IUserData {
   username: string;
@@ -18,6 +31,11 @@ export interface IUserData {
     {
       prodi_name: string;
       prodi_code: string;
+    }
+  ];
+  jenjang: [
+    {
+      jenjang_name: Jenjang;
     }
   ];
 }
@@ -59,6 +77,9 @@ class UserParse {
               prodi_name: user.prodi_name,
               prodi_code: user.prodi_code,
             });
+            existingEntry.jenjang.push({
+              jenjang_name: user.jenjang_name,
+            });
           } else {
             userData.push({
               username: user.username,
@@ -74,6 +95,11 @@ class UserParse {
                 {
                   prodi_name: user.prodi_name,
                   prodi_code: user.prodi_code,
+                },
+              ],
+              jenjang: [
+                {
+                  jenjang_name: user.jenjang_name,
                 },
               ],
             });
