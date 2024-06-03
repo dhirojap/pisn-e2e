@@ -1,55 +1,53 @@
-import { expect, test as setup } from "@playwright/test";
-import URLConfig from "@utils/URLConfig";
-import getUserData from "@utils/UserConfig";
+import { type Page, expect, test as setup } from "@playwright/test";
+import { baseURL, loginURL } from "@utils/URLConfig";
+import UserParse from "@utils/UserParse";
 import path = require("path");
 
-setup.describe.parallel("Global Setup", () => {
-  setup("Clearing server cache", async ({ page }) => {
-    await page.goto(`${URLConfig.baseURL}/dev/cache`);
-    await page.getByRole("button", { name: "Clear Expired Cache" }).click();
-    await page.getByRole("button", { name: "OK" }).click();
-    await page.waitForLoadState("domcontentloaded");
+setup.beforeAll(async ({ browser }) => {
+  const page: Page = await browser.newPage();
 
-    await expect(page.getByText("Success")).toBeVisible();
+  await page.goto(`${baseURL}/dev/cache`);
+  await page.getByRole("button", { name: "Clear Expired Cache" }).click();
+  await page.getByRole("button", { name: "OK" }).click();
 
-    await page.getByRole("button", { name: "OK" }).click();
-    await page.getByRole("button", { name: "Clear All Cache" }).click();
-    await page.getByRole("button", { name: "OK" }).click();
-    await page.waitForLoadState("domcontentloaded");
+  await expect(page.getByText("Success")).toBeVisible();
 
-    await expect(page.getByText("Success")).toBeVisible();
+  await page.getByRole("button", { name: "OK" }).click();
+  await page.getByRole("button", { name: "Clear All Cache" }).click();
+  await page.getByRole("button", { name: "OK" }).click();
 
-    await page.getByRole("button", { name: "OK" }).click();
+  await expect(page.getByText("Success")).toBeVisible();
 
-    console.log("Clear server cache success ✅");
-  });
+  await page.getByRole("button", { name: "OK" }).click();
 
-  setup("Enabling mock operator", async ({ page }) => {
-    await page.goto(`${URLConfig.baseURL}/dev/mock-operator`);
-    await page.getByRole("link", { name: "Enable" }).first().click();
+  console.log("Clear server cache success ✅");
 
-    await expect(page.getByText("Success").first()).toBeVisible();
+  await page.goto(`${baseURL}/dev/mock-operator`);
+  await page.getByRole("link", { name: "Enable" }).first().click();
 
-    await page.getByRole("button", { name: "OK" }).click();
-    await page.getByRole("link", { name: "Enable" }).click();
+  await expect(page.getByText("Success").first()).toBeVisible();
 
-    await expect(page.getByText("Success").first()).toBeVisible();
+  await page.getByRole("button", { name: "OK" }).click();
+  await page.getByRole("link", { name: "Enable" }).click();
 
-    await page.getByRole("button", { name: "OK" }).click();
+  await expect(page.getByText("Success").first()).toBeVisible();
 
-    console.log("Enable mock operator success ✅");
-  });
+  await page.getByRole("button", { name: "OK" }).click();
 
-  const userData = getUserData();
-  for (const user of userData) {
+  console.log("Enable mock operator success ✅");
+});
+
+setup.describe.parallel("Auth Setup", () => {
+  const users = new UserParse();
+  for (const user of users.parse()) {
     setup(`Logging In ${user.username}`, async ({ page }) => {
-      await page.goto(URLConfig.loginURL);
+      await page.goto(loginURL);
       await page.getByPlaceholder("Username").fill(user.username);
       await page.getByPlaceholder("Kata Sandi").fill(user.password);
       await page.getByRole("button", { name: "Login" }).last().click();
       await page.waitForLoadState("domcontentloaded");
 
-      await expect(page).toHaveURL(`${URLConfig.baseURL}/${user.role}`);
+      await expect(page).toHaveURL(`${baseURL}/${user.role}`);
       await expect(page.getByRole("link", { name: "dashboard" })).toBeVisible();
 
       console.log(`${user.username} login success ✅`);
