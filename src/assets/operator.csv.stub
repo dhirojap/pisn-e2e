@@ -1,6 +1,6 @@
-username,password,role,pt_name,prodi_name,pt_code,prodi_code
-operator.parallel1,p1sn#30012024,operator,Universitas Indonesia,Urologi,001002,11713
-operator.parallel2,p1sn#30012024,operator,Universitas Jambi,Pendidikan Profesi Guru,001020,86904
-operator.parallel3,p1sn#30012024,operator,Universitas Terbuka,Manajemen,001031,61201
-operator.parallel4,p1sn#30012024,operator,Universitas Negeri Makassar,PSKGJ Pendidikan Guru Pendidikan Anak Usia Dini,001036,86277
-operator.parallel5,p1sn#30012024,operator,Universitas Negeri Surabaya,Pendidikan Profesi Guru,001039,86904
+username,password,role,pt_name,prodi_name,jenjang_name,pt_code,prodi_code
+operator.parallel1,p1sn#30012024,operator,Universitas Indonesia,Urologi,Spesialis,001002,11713
+operator.parallel2,p1sn#30012024,operator,Universitas Jambi,Pendidikan Profesi Guru,Profesi,001020,86904
+operator.parallel3,p1sn#30012024,operator,Universitas Terbuka,Manajemen,Sarjana,001031,61201
+operator.parallel4,p1sn#30012024,operator,Universitas Negeri Makassar,PSKGJ Pendidikan Guru Pendidikan Anak Usia Dini,Sarjana,001036,86277
+operator.parallel5,p1sn#30012024,operator,Universitas Negeri Surabaya,Pendidikan Profesi Guru,Profesi,001039,86904
